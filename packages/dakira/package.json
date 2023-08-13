@@ -40,5 +40,8 @@
   "engines": {
     "node": ">= 20.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@orama/orama": "^1.0.3",
+    "acorn": "^8.10.0"
+  }
 }
