@@ -6,6 +6,7 @@
   "main": "index.js",
   "keywords": [],
   "scripts": {
+    "prepare": "husky install",
     "build": "turbo build",
     "build:dakira": "cd packages/dakira && npm run build",
     "format": "rome format packages --write",
@@ -23,6 +24,5 @@
     "url": "https://github.com/marco-ippolito",
     "author": true
   },
-  "license": "Apache-2.0",
-  "dependencies": {}
+  "license": "Apache-2.0"
 }
