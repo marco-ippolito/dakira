@@ -9,13 +9,15 @@
     "prepare": "husky install",
     "build": "turbo build",
     "build:dakira": "cd packages/dakira && npm run build",
-    "format": "rome format packages --write",
+    "format": "biome format packages --write",
     "lint": "turbo lint",
     "test": "turbo test"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.1.2",
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
     "husky": "^8.0.2",
-    "rome": "12.1.3",
     "turbo": "^1.8.5"
   },
   "author": {
