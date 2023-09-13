@@ -1,8 +1,5 @@
-import { ParseResult } from "@babel/parser";
-import { File as BabelFile, Node as BabelNode } from "@babel/types";
+import { Node, SourceLocation } from "@babel/types";
 import { randomUUID } from "node:crypto";
-
-export type ParsedFile = ParseResult<BabelFile>;
 
 export const fieldsToTraverse = [
 	"body",
@@ -22,39 +19,31 @@ export const fieldsToTraverse = [
 	"left",
 	"right",
 	"program",
-] as const;
+];
 
-interface BaseNode {
+export interface DakiraNode {
 	nodeId: string;
 	field: string;
+	type: string;
+	loc: SourceLocation;
 	parentType?: string;
 	parentId?: string;
 	root?: boolean;
+	name?: string;
+	kind?: string;
+	value?: string;
 }
 
-type UnionToIntersection<U> = (
-	U extends unknown
-		? (k: U) => void
-		: never
-) extends (k: infer I) => void
-	? I
-	: never;
-
-type MagicType<U> = UnionToIntersection<U> extends infer O
-	? { [K in keyof O]: O[K] }
-	: never;
-
-const fieldsToPick = ["name", "kind", "value", "type", "loc"] as const;
-
-export type GenericBabelNode = Pick<
-	MagicType<BabelNode>,
-	typeof fieldsToPick[number] | typeof fieldsToTraverse[number]
->;
-
-export type DakiraNode = BaseNode & GenericBabelNode;
+const fieldsToPick: Array<Partial<keyof DakiraNode>> = [
+	"name",
+	"kind",
+	"value",
+	"type",
+	"loc",
+];
 
 export function traverse(
-	node: GenericBabelNode,
+	node: Node,
 	results: DakiraNode[],
 	parentId?: string,
 	parentType?: string,
@@ -76,8 +65,10 @@ export function traverse(
 	}
 
 	for (const field of fieldsToPick) {
-		if (node[field]) {
-			accumulator[field] = node[field];
+		if (node[field as keyof Node]) {
+			// @ts-ignore
+			// I know node contains the fields I'm looking for and I'm sure its a keyof DakiraNode
+			accumulator[field] = node[field as keyof Node];
 		}
 	}
 
@@ -87,13 +78,13 @@ export function traverse(
 	if (type === "VariableDeclaration") {
 		kindInheritable = accumulator.kind;
 	} else if (kindInherited) {
-		accumulator.kind = kindInherited as unknown as undefined;
+		accumulator.kind = kindInherited;
 	}
 
 	results.push(accumulator as DakiraNode);
 
 	for (const field of fieldsToTraverse) {
-		const child = node[field] as GenericBabelNode;
+		const child = node[field as keyof Node] as unknown as Node;
 		if (child) {
 			if (Array.isArray(child)) {
 				for (const el of child) {

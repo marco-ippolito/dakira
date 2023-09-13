@@ -7,18 +7,15 @@
   "keywords": [],
   "scripts": {
     "prepare": "husky install",
-    "build": "turbo build",
-    "build:dakira": "cd packages/dakira && npm run build",
     "format": "biome format packages --write",
-    "lint": "turbo lint",
-    "test": "turbo test"
+    "lint": "biome check packages",
+    "test": "bun test packages"
   },
   "devDependencies": {
     "@biomejs/biome": "1.1.2",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
-    "husky": "^8.0.2",
-    "turbo": "^1.8.5"
+    "husky": "^8.0.2"
   },
   "author": {
     "name": "Marco Ippolito",
@@ -26,5 +23,6 @@
     "url": "https://github.com/marco-ippolito",
     "author": true
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "workspaces": ["packages/*"]
 }

@@ -7,9 +7,11 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true
-		}
+		},
+		"ignore": ["dist"]
 	},
 	"formatter": {
-		"formatWithErrors": true
+		"formatWithErrors": true,
+		"ignore": ["dist"]
 	}
 }

@@ -1,6 +1,6 @@
 import { ParserOptions, parse } from "@babel/parser";
 import { lstat, readFile, readdir } from "node:fs/promises";
-import { DakiraNode, GenericBabelNode, traverse } from "./traverse.js";
+import { DakiraNode, traverse } from "./traverse.js";
 
 const DEFAULT_SETTINGS = {
 	errorRecovery: true,
@@ -14,20 +14,16 @@ export async function isDirectory(path: string): Promise<boolean> {
 export async function read(
 	path: string,
 	parseOpts: ParserOptions,
-): Promise<DakiraNode[] | undefined> {
-	try {
-		const settings = { ...DEFAULT_SETTINGS, ...parseOpts };
-		const isDir = await isDirectory(path);
-		if (!isDir) {
-			const nodes = await parseFile(path, settings);
-			return nodes;
-		}
-		const output: DakiraNode[] = [];
-		await parseFilesRecursively(path, output, settings);
-		return output;
-	} catch (error) {
-		console.log(error);
+): Promise<DakiraNode[]> {
+	const settings = { ...DEFAULT_SETTINGS, ...parseOpts };
+	const isDir = await isDirectory(path);
+	if (!isDir) {
+		const nodes = await parseFile(path, settings);
+		return nodes;
 	}
+	const output: DakiraNode[] = [];
+	await parseFilesRecursively(path, output, settings);
+	return output;
 }
 
 export async function parseFilesRecursively(
@@ -50,12 +46,11 @@ export async function parseFilesRecursively(
 
 export async function parseFile(path: string, parseOpts: ParserOptions) {
 	const file = await readFile(path, { encoding: "utf-8" });
-
-	// root node we convert it to GenericBabelNode
+	// root node we convert it to Node
 	const ast = parse(file, {
 		...parseOpts,
 		sourceFilename: path,
-	}) as unknown as GenericBabelNode;
+	});
 	const result: DakiraNode[] = [];
 	traverse(ast, result);
 	return result;

@@ -1,46 +1,39 @@
 {
-  "name": "@dakira/dakira",
-  "version": "0.0.1",
-  "type": "module",
-  "description": "dakira core",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/marco-ippolito/dakira"
-  },
-  "bugs": {
-    "url": "https://github.com/marco-ippolito/dakira"
-  },
-  "scripts": {
-    "predev": "rm -rf dist && mkdir dist",
-    "prebuild": "pnpm lint",
-    "build": "tsx",
-    "lint": "biome check src test",
-    "test": "node --test --loader tsx test/*.spec.ts"
-  },
-  "keywords": [],
-  "author": {
-    "name": "Marco Ippolito",
-    "email": "marcoippolito54@gmail.com",
-    "url": "https://github.com/marco-ippolito",
-    "author": true
-  },
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "@babel/types": "^7.22.5",
-    "tsx": "^3.12.1",
-    "typescript": "^4.9.4",
-    "@types/node": "^20.4.0"
-  },
-  "engines": {
-    "node": ">= 20.0.0"
-  },
-  "dependencies": {
-    "@babel/parser": "^7.22.7",
-    "@orama/orama": "^1.0.3"
-  }
+	"name": "@dakira/dakira",
+	"version": "0.0.1",
+	"type": "module",
+	"description": "dakira core",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": ["dist"],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/marco-ippolito/dakira"
+	},
+	"bugs": {
+		"url": "https://github.com/marco-ippolito/dakira"
+	},
+	"scripts": {
+		"predev": "rm -rf dist && mkdir dist",
+		"prebuild": "bun lint",
+		"build": "bun build ./src/index.ts --outdir=dist --splitting",
+		"lint": "biome check src test",
+		"test": "bun test test/*.spec.ts"
+	},
+	"keywords": [],
+	"author": {
+		"name": "Marco Ippolito",
+		"email": "marcoippolito54@gmail.com",
+		"url": "https://github.com/marco-ippolito",
+		"author": true
+	},
+	"license": "Apache-2.0",
+	"devDependencies": {
+		"@babel/types": "^7.22.5",
+		"bun-types": "^1.0.1"
+	},
+	"dependencies": {
+		"@babel/parser": "^7.22.7",
+		"@orama/orama": "^1.0.3"
+	}
 }
