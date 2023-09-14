@@ -1,7 +1,10 @@
-import { Node, SourceLocation } from "@babel/types";
+import { Node, VariableDeclaration } from "@babel/types";
 import { randomUUID } from "node:crypto";
 
-export const fieldsToTraverse = [
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+type NodeKey = KeysOfUnion<Node>;
+
+export const fieldsToTraverse: NodeKey[] = [
 	"body",
 	"declarations",
 	"arguments",
@@ -21,32 +24,21 @@ export const fieldsToTraverse = [
 	"program",
 ];
 
-export interface DakiraNode {
+export type DakiraNode = Record<NodeKey, unknown> & {
 	nodeId: string;
 	field: string;
-	type: string;
-	loc: SourceLocation;
 	parentType?: string;
 	parentId?: string;
 	root?: boolean;
-	name?: string;
-	kind?: string;
-	value?: string;
-}
+};
 
-const fieldsToPick: Array<Partial<keyof DakiraNode>> = [
-	"name",
-	"kind",
-	"value",
-	"type",
-	"loc",
-];
+const fieldsToPick: NodeKey[] = ["name", "kind", "value", "type", "loc"];
 
 export function traverse(
 	node: Node,
 	results: DakiraNode[],
 	parentId?: string,
-	parentType?: string,
+	parentType?: Node["type"],
 	field?: string,
 	kindInherited?: string,
 ) {
@@ -66,8 +58,6 @@ export function traverse(
 
 	for (const field of fieldsToPick) {
 		if (node[field as keyof Node]) {
-			// @ts-ignore
-			// I know node contains the fields I'm looking for and I'm sure its a keyof DakiraNode
 			accumulator[field] = node[field as keyof Node];
 		}
 	}
@@ -76,7 +66,7 @@ export function traverse(
 
 	let kindInheritable = kindInherited;
 	if (type === "VariableDeclaration") {
-		kindInheritable = accumulator.kind;
+		kindInheritable = accumulator.kind as VariableDeclaration["kind"];
 	} else if (kindInherited) {
 		accumulator.kind = kindInherited;
 	}
@@ -88,10 +78,24 @@ export function traverse(
 		if (child) {
 			if (Array.isArray(child)) {
 				for (const el of child) {
-					traverse(el, results, nodeId, type, field, kindInheritable);
+					traverse(
+						el,
+						results,
+						nodeId,
+						type as Node["type"],
+						field,
+						kindInheritable,
+					);
 				}
 			} else {
-				traverse(child, results, nodeId, type, field, kindInheritable);
+				traverse(
+					child,
+					results,
+					nodeId,
+					type as Node["type"],
+					field,
+					kindInheritable,
+				);
 			}
 		}
 	}
