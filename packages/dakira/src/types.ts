@@ -1,6 +1,9 @@
-interface DakiraOptions {
+import { ParserOptions } from "@babel/parser";
+
+export interface DakiraOptions {
 	path: string;
-	extensions: Array<SupportedExtensions>;
+	extensions?: Array<SupportedExtensions>;
+	parserOptions?: ParserOptions;
 }
 
 type SupportedExtensions = "js" | "ts";

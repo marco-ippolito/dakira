@@ -13,7 +13,7 @@ export async function isDirectory(path: string): Promise<boolean> {
 
 export async function read(
 	path: string,
-	parseOpts: ParserOptions,
+	parseOpts: ParserOptions = {},
 ): Promise<DakiraNode[]> {
 	const settings = { ...DEFAULT_SETTINGS, ...parseOpts };
 	const isDir = await isDirectory(path);

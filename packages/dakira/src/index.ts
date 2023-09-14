@@ -1,3 +1,3 @@
-import { read } from "./parser.ts";
+import { createIndex } from "./search";
 
-export default read;
+export default createIndex;
